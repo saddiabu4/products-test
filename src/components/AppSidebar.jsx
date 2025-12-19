@@ -43,10 +43,10 @@ export function AppSidebar() {
 	const mainItems = token
 		? [
 				{ title: "Dashboard", url: "/", icon: LayoutDashboard },
-				{ title: "Products", url: "/products", icon: ShoppingBag },
+				{ title: "Products", url: "/admin/products", icon: ShoppingBag },
 				{ title: "Inbox", url: "/inbox", icon: Inbox },
-				{ title: "Users", url: "/users", icon: UsersIcon },
-				{ title: "Carts", url: "/carts", icon: CreditCard },
+				{ title: "Users", url: "/admin/users", icon: UsersIcon },
+				{ title: "Carts", url: "/admin/carts", icon: CreditCard },
 		  ]
 		: [
 				{ title: "Dashboard", url: "/", icon: LayoutDashboard },
