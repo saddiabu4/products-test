@@ -19,7 +19,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { Minus, Plus, Search, ShoppingCart, Star } from "lucide-react"
 import { useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
-
+import { useNavigate } from "react-router-dom"
 const Products = () => {
 	const [products, setProducts] = useState([])
 	const [search, setSearch] = useState("")
@@ -27,6 +27,7 @@ const Products = () => {
 	const [loading, setLoading] = useState(true)
 	const [selectedProduct, setSelectedProduct] = useState(null)
 	const [quantity, setQuantity] = useState(1)
+	const navigate = useNavigate()
 
 	const { addToCart, cartTotalItems } = useCart()
 
@@ -94,6 +95,7 @@ const Products = () => {
 						variant='ghost'
 						size='icon'
 						className='relative text-slate-300 hover:text-white hover:bg-slate-700/50'
+						onClick={() => navigate("/inbox")}
 					>
 						<ShoppingCart className='h-5 w-5' />
 						{cartTotalItems > 0 && (

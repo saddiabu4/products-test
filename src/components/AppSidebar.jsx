@@ -3,11 +3,10 @@ import {
 	Inbox,
 	LayoutDashboard,
 	LogOut,
-	Settings,
 	ShoppingBag,
-	User,
+	Users as UsersIcon,
 } from "lucide-react"
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -33,28 +32,27 @@ import {
 import { useCart } from "@/context/CartContext"
 import { ChevronUp } from "lucide-react"
 
-// Menu items
-const mainItems = [
-	{
-		title: "Dashboard",
-		url: "/",
-		icon: LayoutDashboard,
-	},
-	{
-		title: "Products",
-		url: "/products",
-		icon: ShoppingBag,
-	},
-	{
-		title: "Inbox",
-		url: "/inbox",
-		icon: Inbox,
-	},
-]
-
 export function AppSidebar() {
 	const location = useLocation()
+	const navigate = useNavigate()
 	const { cartTotalItems } = useCart()
+
+	const token = localStorage.getItem("token")
+
+	// Dynamic sidebar items based on token
+	const mainItems = token
+		? [
+				{ title: "Dashboard", url: "/", icon: LayoutDashboard },
+				{ title: "Products", url: "/products", icon: ShoppingBag },
+				{ title: "Inbox", url: "/inbox", icon: Inbox },
+				{ title: "Users", url: "/users", icon: UsersIcon },
+				{ title: "Carts", url: "/carts", icon: CreditCard },
+		  ]
+		: [
+				{ title: "Dashboard", url: "/", icon: LayoutDashboard },
+				{ title: "Products", url: "/products", icon: ShoppingBag },
+				{ title: "Inbox", url: "/inbox", icon: Inbox },
+		  ]
 
 	const isActive = (url) => {
 		if (url === "/") return location.pathname === "/"
@@ -63,7 +61,7 @@ export function AppSidebar() {
 
 	return (
 		<Sidebar className='border-r border-slate-700/50'>
-			{/* Header with Logo */}
+			{/* Header */}
 			<SidebarHeader className='bg-slate-900 border-b border-slate-700/50 p-4'>
 				<div className='flex items-center gap-3'>
 					<div className='h-9 w-9 rounded-lg bg-linear-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-blue-500/20'>
@@ -76,8 +74,8 @@ export function AppSidebar() {
 				</div>
 			</SidebarHeader>
 
+			{/* Sidebar Content */}
 			<SidebarContent className='bg-slate-900 px-2 py-4'>
-				{/* Main Navigation */}
 				<SidebarGroup>
 					<SidebarGroupLabel className='text-slate-500 text-xs font-semibold uppercase tracking-wider px-3 mb-2'>
 						Main Menu
@@ -90,13 +88,13 @@ export function AppSidebar() {
 										asChild
 										isActive={isActive(item.url)}
 										className={`
-											group relative rounded-lg px-3 py-2.5 transition-all duration-200
-											${
+                      group relative rounded-lg px-3 py-2.5 transition-all duration-200
+                      ${
 												isActive(item.url)
 													? "bg-linear-to-r from-blue-600/20 to-cyan-600/20 text-white border border-blue-500/30"
 													: "text-slate-400 hover:text-white hover:bg-slate-800/50"
 											}
-										`}
+                    `}
 									>
 										<Link to={item.url} className='flex items-center gap-3'>
 											<item.icon
@@ -124,7 +122,7 @@ export function AppSidebar() {
 				</SidebarGroup>
 			</SidebarContent>
 
-			{/* Footer with User Profile */}
+			{/* Footer / User Profile */}
 			<SidebarFooter className='bg-slate-900 border-t border-slate-700/50 p-3'>
 				<SidebarMenu>
 					<SidebarMenuItem>
@@ -135,14 +133,24 @@ export function AppSidebar() {
 										<Avatar className='h-9 w-9 border-2 border-slate-700 group-hover:border-blue-500/50 transition-colors'>
 											<AvatarImage src='https://github.com/shadcn.png' />
 											<AvatarFallback className='bg-linear-to-br from-blue-500 to-cyan-500 text-white text-sm font-semibold'>
-												JD
+												{token ? "AD" : "G"}
 											</AvatarFallback>
 										</Avatar>
 										<div className='flex-1 text-left'>
-											<p className='text-sm font-semibold text-white'>
-												John Doe
-											</p>
-											<p className='text-xs text-slate-500'>john@example.com</p>
+											{token ? (
+												<>
+													<p className='text-sm font-semibold text-white'>
+														Admin
+													</p>
+													<p className='text-xs text-slate-500'>
+														admin@example.com
+													</p>
+												</>
+											) : (
+												<p className='text-sm font-semibold text-white'>
+													Guest
+												</p>
+											)}
 										</div>
 										<ChevronUp className='h-4 w-4 text-slate-500 group-hover:text-slate-300 transition-colors' />
 									</div>
@@ -153,29 +161,53 @@ export function AppSidebar() {
 								align='start'
 								className='w-56 bg-slate-800 border border-slate-700 shadow-xl shadow-black/20'
 							>
-								<DropdownMenuLabel className='text-slate-400 font-normal'>
-									<div className='flex flex-col space-y-1'>
-										<p className='text-sm font-medium text-white'>John Doe</p>
-										<p className='text-xs text-slate-500'>john@example.com</p>
-									</div>
-								</DropdownMenuLabel>
-								<DropdownMenuSeparator className='bg-slate-700' />
-								<DropdownMenuItem className='text-slate-300 hover:text-white hover:bg-slate-700/50 cursor-pointer transition-colors focus:bg-slate-700/50 focus:text-white'>
-									<User className='h-4 w-4 mr-2 text-slate-400' />
-									<span>Profile</span>
-								</DropdownMenuItem>
-								<DropdownMenuItem className='text-slate-300 hover:text-white hover:bg-slate-700/50 cursor-pointer transition-colors focus:bg-slate-700/50 focus:text-white'>
-									<CreditCard className='h-4 w-4 mr-2 text-slate-400' />
-									<span>Billing</span>
-								</DropdownMenuItem>
-								<DropdownMenuItem className='text-slate-300 hover:text-white hover:bg-slate-700/50 cursor-pointer transition-colors focus:bg-slate-700/50 focus:text-white'>
-									<Settings className='h-4 w-4 mr-2 text-slate-400' />
-									<span>Settings</span>
-								</DropdownMenuItem>
-								<DropdownMenuSeparator className='bg-slate-700' />
-								<DropdownMenuItem className='text-red-400 hover:text-red-300 hover:bg-red-500/10 cursor-pointer transition-colors focus:bg-red-500/10 focus:text-red-300'>
-									<LogOut className='h-4 w-4 mr-2' />
-									<span>Sign out</span>
+								{token ? (
+									<>
+										<DropdownMenuLabel className='text-slate-400 font-normal'>
+											<div className='flex flex-col space-y-1'>
+												<p className='text-sm font-medium text-white'>Admin</p>
+												<p className='text-xs text-slate-500'>
+													admin@example.com
+												</p>
+											</div>
+										</DropdownMenuLabel>
+										<DropdownMenuSeparator className='bg-slate-700' />
+										<DropdownMenuItem
+											className='text-slate-300 hover:text-white hover:bg-slate-700/50 cursor-pointer transition-colors focus:bg-slate-700/50 focus:text-white'
+											onClick={() => navigate("/users")}
+										>
+											<UsersIcon className='h-4 w-4 mr-2 text-slate-400' />{" "}
+											Users
+										</DropdownMenuItem>
+										<DropdownMenuItem
+											className='text-slate-300 hover:text-white hover:bg-slate-700/50 cursor-pointer transition-colors focus:bg-slate-700/50 focus:text-white'
+											onClick={() => navigate("/products")}
+										>
+											<ShoppingBag className='h-4 w-4 mr-2 text-slate-400' />{" "}
+											Products
+										</DropdownMenuItem>
+										<DropdownMenuItem
+											className='text-slate-300 hover:text-white hover:bg-slate-700/50 cursor-pointer transition-colors focus:bg-slate-700/50 focus:text-white'
+											onClick={() => navigate("/carts")}
+										>
+											<CreditCard className='h-4 w-4 mr-2 text-slate-400' />{" "}
+											Carts
+										</DropdownMenuItem>
+										<DropdownMenuSeparator className='bg-slate-700' />
+									</>
+								) : (
+									<DropdownMenuLabel className='text-slate-400 font-normal'>
+										Guest user
+									</DropdownMenuLabel>
+								)}
+								<DropdownMenuItem
+									className='text-red-400 hover:text-red-300 hover:bg-red-500/10 cursor-pointer transition-colors focus:bg-red-500/10 focus:text-red-300'
+									onClick={() => {
+										localStorage.removeItem("token")
+										navigate("/")
+									}}
+								>
+									<LogOut className='h-4 w-4 mr-2' /> Sign out
 								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>

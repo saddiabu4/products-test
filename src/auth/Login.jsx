@@ -32,7 +32,12 @@ const Login = () => {
 			const response = await api.post("/auth/login", form)
 			toast.success("Login successful 🎉")
 
+			// Token saqlash
 			localStorage.setItem("token", response.data.token)
+
+			// Bosh sahifaga o‘tish va reload
+			navigate("/")
+			window.location.reload() // shu satr sahifani yangilaydi va sidebar yangilanadi
 		} catch (error) {
 			toast.error(error.response?.data?.message || "Login failed ❌")
 		} finally {
@@ -172,7 +177,7 @@ const Login = () => {
 								type='submit'
 								className='w-full transition-transform hover:scale-[1.02]'
 								disabled={loading}
-								onClick={() => navigate("/")}
+								onClick={handleSubmit}
 							>
 								{loading ? (
 									<>

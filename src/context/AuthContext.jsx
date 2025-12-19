@@ -4,16 +4,15 @@ const AuthContext = createContext()
 
 export const AuthProvider = ({ children }) => {
 	const [token, setToken] = useState(null)
-	const isAdmin = !!token // ⭐ token bor bo‘lsa admin
 
 	useEffect(() => {
-		const savedToken = localStorage.getItem("token")
-		if (savedToken) setToken(savedToken)
+		const storedToken = localStorage.getItem("token")
+		if (storedToken) setToken(storedToken)
 	}, [])
 
-	const login = (token) => {
-		localStorage.setItem("token", token)
-		setToken(token)
+	const login = (newToken) => {
+		localStorage.setItem("token", newToken)
+		setToken(newToken)
 	}
 
 	const logout = () => {
@@ -22,7 +21,7 @@ export const AuthProvider = ({ children }) => {
 	}
 
 	return (
-		<AuthContext.Provider value={{ token, isAdmin, login, logout }}>
+		<AuthContext.Provider value={{ token, login, logout }}>
 			{children}
 		</AuthContext.Provider>
 	)
